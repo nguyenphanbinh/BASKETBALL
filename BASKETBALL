@@ -1,0 +1,120 @@
+package BASKETBALL;
+
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+public class QuanLyBongRo {
+    private static final ArrayList<String> cauThu = new ArrayList<>();
+    private static final ArrayList<String> doiBong = new ArrayList<>();
+    private static final ArrayList<String> tranDau = new ArrayList<>();
+    private static final Map<String, Integer> soCups = new HashMap<>();
+    private static final Map<String, Integer> soThang = new HashMap<>();
+    private static final Map<String, Integer> soThua = new HashMap<>();
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Hệ Thống Quản Lý Bóng Rổ");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(500, 400);
+        frame.setLayout(new GridLayout(4, 2));
+        
+        JButton chieuMoCauThuBtn = new JButton("Chiêu Mộ Cầu Thủ");
+        JButton themDoiBongBtn = new JButton("Thêm Đội Bóng");
+        JButton ghiNhanTranDauBtn = new JButton("Ghi Nhận Trận Đấu");
+        JButton danhSachCauThuBtn = new JButton("Danh Sách Cầu Thủ");
+        JButton danhSachDoiBongBtn = new JButton("Danh Sách Đội Bóng");
+        JButton thongKeTranDauBtn = new JButton("Thống Kê Trận Đấu");
+        JButton thongKeCupsBtn = new JButton("Thống Kê Số Cúp");
+        JButton thongKeThangThuaBtn = new JButton("Thống Kê Thắng/Thua");
+        
+        chieuMoCauThuBtn.addActionListener(e -> chieuMoCauThu());
+        themDoiBongBtn.addActionListener(e -> themDoiBong());
+        ghiNhanTranDauBtn.addActionListener(e -> ghiNhanTranDau());
+        danhSachCauThuBtn.addActionListener(e -> danhSachCauThu());
+        danhSachDoiBongBtn.addActionListener(e -> danhSachDoiBong());
+        thongKeTranDauBtn.addActionListener(e -> thongKeTranDau());
+        thongKeCupsBtn.addActionListener(e -> thongKeCups());
+        thongKeThangThuaBtn.addActionListener(e -> thongKeThangThua());
+        
+        frame.add(chieuMoCauThuBtn);
+        frame.add(themDoiBongBtn);
+        frame.add(ghiNhanTranDauBtn);
+        frame.add(danhSachCauThuBtn);
+        frame.add(danhSachDoiBongBtn);
+        frame.add(thongKeTranDauBtn);
+        frame.add(thongKeCupsBtn);
+        frame.add(thongKeThangThuaBtn);
+        
+        frame.setVisible(true);
+    }
+
+    private static void chieuMoCauThu() {
+        String ten = JOptionPane.showInputDialog("Nhập Tên Cầu Thủ:");
+        if (ten != null && !ten.trim().isEmpty()) {
+            cauThu.add(ten);
+            JOptionPane.showMessageDialog(null, "Cầu thủ đã được thêm thành công!");
+        }
+    }
+
+    private static void themDoiBong() {
+        String ten = JOptionPane.showInputDialog("Nhập Tên Đội Bóng:");
+        if (ten != null && !ten.trim().isEmpty()) {
+            doiBong.add(ten);
+            soCups.put(ten, 0);
+            soThang.put(ten, 0);
+            soThua.put(ten, 0);
+            JOptionPane.showMessageDialog(null, "Đội bóng đã được thêm thành công!");
+        }
+    }
+
+    private static void ghiNhanTranDau() {
+        String tran = JOptionPane.showInputDialog("Nhập Chi Tiết Trận Đấu (Đội1 vs Đội2 - Tỉ số - Đội Thắng):");
+        if (tran != null && !tran.trim().isEmpty()) {
+            tranDau.add(tran);
+            String[] parts = tran.split(" - ");
+            if (parts.length == 3) {
+                String doiThang = parts[2];
+                soThang.put(doiThang, soThang.getOrDefault(doiThang, 0) + 1);
+                for (String doi : parts[0].split(" vs ")) {
+                    if (!doi.equals(doiThang)) {
+                        soThua.put(doi, soThua.getOrDefault(doi, 0) + 1);
+                    }
+                }
+            }
+            JOptionPane.showMessageDialog(null, "Trận đấu đã được ghi nhận thành công!");
+        }
+    }
+
+    private static void danhSachCauThu() {
+        String message = cauThu.isEmpty() ? "Chưa có cầu thủ nào." : String.join("\n", cauThu);
+        JOptionPane.showMessageDialog(null, "Danh Sách Cầu Thủ:\n" + message);
+    }
+
+    private static void danhSachDoiBong() {
+        String message = doiBong.isEmpty() ? "Chưa có đội bóng nào." : String.join("\n", doiBong);
+        JOptionPane.showMessageDialog(null, "Danh Sách Đội Bóng:\n" + message);
+    }
+
+    private static void thongKeTranDau() {
+        String message = tranDau.isEmpty() ? "Chưa có trận đấu nào được ghi nhận." : String.join("\n", tranDau);
+        JOptionPane.showMessageDialog(null, "Thống Kê Trận Đấu:\n" + message);
+    }
+
+    private static void thongKeCups() {
+        StringBuilder sb = new StringBuilder("Thống Kê Số Cúp:\n");
+        for (Map.Entry<String, Integer> entry : soCups.entrySet()) {
+            sb.append(entry.getKey()).append(": ").append(entry.getValue()).append(" cúp\n");
+        }
+        JOptionPane.showMessageDialog(null, sb.toString());
+    }
+
+    private static void thongKeThangThua() {
+        StringBuilder sb = new StringBuilder("Thống Kê Thắng/Thua:\n");
+        for (String doi : doiBong) {
+            sb.append(doi).append(" - Thắng: ").append(soThang.getOrDefault(doi, 0)).append(", Thua: ").append(soThua.getOrDefault(doi, 0)).append("\n");
+        }
+        JOptionPane.showMessageDialog(null, sb.toString());
+    }
+}
